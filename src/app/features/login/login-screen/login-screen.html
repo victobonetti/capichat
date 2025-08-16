@@ -1,0 +1,14 @@
+<div class="w-full h-full flex flex-col items-center justify-center">
+  <div class="flex flex-col w-52">
+    <h1 class="text-2xl w-full">Bem vindo(a)</h1>
+    <h3 class="w-full text-sm text-neutral-700">Para entrar, digite seu telefone</h3>
+    <p-inputmask mask="+55 (99) 9999-9999" 
+        autofocus aria-selected="true" 
+        (input)="onInput($event)" 
+        [(ngModel)]="phoneNumber" type="text" 
+        placeholder="+55 (11) 11111-1111"
+        class="mt-4"
+         />
+  </div>
+  <p-button class=" mt-4" label="Continuar" variant="text" />
+</div>
