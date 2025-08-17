@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: 'login',
+    path: '',
     loadChildren: () =>
       import('./features/login/login-module').then((m) => m.LoginModule),
-  },
+  }
 ];

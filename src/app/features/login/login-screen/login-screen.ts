@@ -1,40 +1,91 @@
 import { Component } from '@angular/core';
+import { Login } from '../../../core/login';
 import { FormsModule } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { CommonModule } from '@angular/common'; // Important for Angular directives
-import { InputMaskModule } from 'primeng/inputmask';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login-screen',
-  standalone: true, // Assuming a standalone component based on your imports
-  imports: [FormsModule, InputTextModule, ButtonModule, CommonModule, InputMaskModule],
   templateUrl: './login-screen.html',
-  styleUrl: './login-screen.css',
+  styleUrls: ['./login-screen.css'],
+  imports: [
+    FormsModule,
+    ButtonModule
+  ],
+  standalone: true
 })
 export class LoginScreen {
-  phoneNumber: string = '';
+  typed: string[] = [];
+  digits: string = '';
+  loading = false;
 
-  onInput(event: any): void {
+  constructor(private loginService: Login) { }
 
-    let input = event.target.value;
+  buttonDisabled() {
+    return this.typed.length != 11 || this.isLoading();
+  }
 
-    if (Number.isNaN(Number(input[input.length - 1]))) {
-      this.phoneNumber = input.substring(0, input.length -2)
+  isLoading(){
+    return this.loading;
+  }
+
+  sendCode() {
+    this.loading = true;
+    const phone = '55' + this.typed.join('');
+
+    this.loginService.sendCode(phone)
+      .pipe(
+        finalize(() => this.loading = false)
+      )
+      .subscribe({
+        next: (success) => {
+          if (success) {
+            console.log('Code sent!');
+          } else {
+            console.error('Failed to send code.');
+          }
+        }
+      });
+  }
+
+  onInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    const lastChar = input.value.replace(/\D/g, '').slice(-1);
+
+    if (/\d/.test(lastChar)) {
+      if (this.typed.length < 11) {
+        this.typed.push(lastChar);
+        this.render();
+      }
     }
 
-    if(input.length >= 1 && input.substring(0, 5) != "+55 (") {
-      input = "+55 (" + input;
+    input.value = this.digits;
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Backspace') {
+      this.typed.pop();
+      this.render();
+      event.preventDefault();
+    }
+  }
+
+  render() {
+    const raw = this.typed.join('');
+
+    let formatted = '+55 ';
+
+    if (raw.length > 0) {
+      formatted += '(' + raw.substring(0, 2);
+    }
+    if (raw.length >= 3) {
+      formatted += ') ' + raw.substring(2, raw.length >= 7 ? 7 : raw.length);
+    }
+    if (raw.length >= 7) {
+      formatted += '-' + raw.substring(7);
     }
 
-    if (input.length >= 8 && input.substring(7,9) != ") ") {
-      input = input.substring(0,7) + ") " + input.substring(7)
-    }
-
-    if (input.length >= 14 && input[13] != "-") {
-      input = input.substring(0,13) + "-" + input.substring(14)
-    }
-
-    this.phoneNumber = input;
+    this.digits = formatted;
   }
 }

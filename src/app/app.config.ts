@@ -5,6 +5,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
 import { definePreset } from '@primeuix/themes';
+import { provideHttpClient } from '@angular/common/http';
 
 const MyPreset = definePreset(Nora, {
     semantic: {
@@ -34,6 +35,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideRouter(routes)
+    provideRouter(routes),
+    provideHttpClient()
   ]
 };

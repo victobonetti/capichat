@@ -1,5 +1,10 @@
-<main class="w-screen h-screen flex items-center justify-center lg:py-4">
-  <div class="text-neutral-950 w-full max-w-[720px] h-full border border-neutral-200 p-4 lg:shadow-sm lg:rounded">
-    <router-outlet />
+<div class="w-screen h-screen flex items-center justify-center lg:py-4">
+  <div class="text-neutral-950 w-full max-w-[720px] h-full p-4 lg:rounded">
+    <header class="absolute flex justify-center max-w-[720px] h-36 w-full bg-white border-b border-gray-200">
+      <img class="h-36" src="1.png" alt="image">
+    </header>
+    <main>
+      <router-outlet />
+    </main>
   </div>
-</main>
+</div>
